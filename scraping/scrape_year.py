@@ -100,24 +100,47 @@ def extract_tables(wrapper) -> tuple:
                     title = rows[0].text.strip()
                     subtitle = ""
 
-                raw_headers = rows[1].find_elements(By.CSS_SELECTOR, "td.banner")
-                headers = [
-                    HEADER_NORMALIZATION.get(cell.text.strip(), cell.text.strip())
-                    for cell in raw_headers
-                ]
-
-                rowspan_tracker = {}
                 data_rows = []
                 previous_row_data = {}
+                rowspan_tracker = {}
+                headers = []
+                current_division = None
 
-                for row in rows[2:-2]:
+                row_index = 1
+                while row_index < len(rows) - 2:
+                    row = rows[row_index]
                     cells = row.find_elements(By.TAG_NAME, "td")
+                    cell_classes = [cell.get_attribute("class") or "" for cell in cells]
+
+                    # Detect banner row with division
+                    if any("banner" in cls for cls in cell_classes):
+                        headers = []
+                        current_division = None
+                        for cell in cells:
+                            cls = cell.get_attribute("class") or ""
+                            text = cell.text.strip()
+                            if "banner middle" in cls and cell.get_attribute("rowspan"):
+                                if "east" in text.lower() or "west" in text.lower():
+                                    current_division = text
+                                    headers.append("division")
+                            elif "banner" in cls:
+                                normalized = HEADER_NORMALIZATION.get(text, text)
+                                headers.append(normalized)
+                        row_index += 1
+                        continue
+
+                    # Parse data row
                     row_data = {}
                     cell_index = header_index = 0
                     guesses = False
 
                     while header_index < len(headers):
                         header = headers[header_index]
+
+                        if header == "division" and current_division:
+                            row_data["division"] = current_division
+                            header_index += 1
+                            continue
 
                         if (
                             header_index in rowspan_tracker
@@ -152,6 +175,7 @@ def extract_tables(wrapper) -> tuple:
 
                     previous_row_data = row_data.copy()
                     data_rows.append(row_data)
+                    row_index += 1
 
                 review_type = classify_team_review(title, subtitle)
                 table_data = {

@@ -29,3 +29,4 @@ def scrape_all_leagues():
                 print(f"Error scraping {league} {year}: {e}")
 
     driver.quit()
+    print("Finished Scraping All Data.")
