@@ -90,15 +90,11 @@ python cli.py demo metadata
 ```
 
 
-```
-
-
 #### Debugging
 ```bash
 python cli.py query "PRAGMA table_info(hitter_stats)"
 python cli.py query "SELECT COUNT(*) FROM pitcher_stats"
 python cli.py query "SELECT DISTINCT year FROM team_standings"
-python cli.py query "SELECT * FROM other_stats WHERE guesses = 1"
 ```
 
 
@@ -120,20 +116,14 @@ Special thanks to Code the Dream, Eric Thomson, Sushmitha Sai Niharika Matcha, a
 
 The project is organized into three main modules:
 
-**scraping/**: Contains all logic for extracting data from the web using Selenium. It parses HTML tables, normalizes headers, and handles quirks like division banners and malformed rows. 
+`scraping/`: Contains all logic for extracting data from the web using Selenium. It parses HTML tables, normalizes headers, and handles quirks like division banners and malformed rows. 
 
-**storage/**: Responsible for exporting scraped data into structured CSV and JSON files. It also handles header normalization and ensures consistent formatting across seasons and leagues.
+`storage/`: Responsible for exporting scraped data into structured CSV and JSON files. It also handles header normalization and ensures consistent formatting across seasons and leagues.
 
-**analysis/**: Imports CSVs into a SQLite database and provides a CLI for running queries. It includes schema inference, table creation, and flexible querying. 
+`analysis/`: Imports CSVs into a SQLite database and provides a CLI for running queries. It includes schema inference, table creation, and flexible querying. 
 
 All output files live in the `/data` directory:
 
 `/data/csv/` : CSV exports
 `/data/json/<LeagueName>/` : JSON files per league/year
-`/data/season_data.db` : SQLite database
-
-    
-python cli.py import --all
-python cli.py import data/csv/hitter_stats.csv hitter_stats
-
-```
+`/data/sqlite.db` : SQLite database
