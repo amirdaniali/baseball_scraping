@@ -132,7 +132,6 @@ def extract_tables(wrapper) -> tuple:
                     # Parse data row
                     row_data = {}
                     cell_index = header_index = 0
-                    guesses = False
 
                     while header_index < len(headers):
                         header = headers[header_index]
@@ -153,7 +152,6 @@ def extract_tables(wrapper) -> tuple:
 
                         if cell_index >= len(cells):
                             row_data[header] = previous_row_data.get(header, "")
-                            guesses = True
                             header_index += 1
                             continue
 
@@ -169,9 +167,6 @@ def extract_tables(wrapper) -> tuple:
                         row_data[header] = text
                         cell_index += 1
                         header_index += 1
-
-                    if guesses:
-                        row_data["guesses"] = True
 
                     previous_row_data = row_data.copy()
                     data_rows.append(row_data)
