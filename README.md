@@ -4,6 +4,8 @@ This project scrapes historical baseball data from league pages, stores it in st
 
 It's built for people who like their baseball stats clean, queryable, and not buried in HTML spaghetti.
 
+[Demo Link: Baseball Stats Dashboard](https://baseball-kj3k.onrender.com/) You might have to wait upto 1 minute for the server to start.
+
 ---
 
 ## Getting Started
