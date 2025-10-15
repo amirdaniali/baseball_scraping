@@ -2,74 +2,101 @@ import pandas as pd
 from dash import Input, Output, html, dash_table
 from visualisation.charts import (
     team_win_percentage_chart,
-    hitter_stat_chart,
-    pitcher_distribution_chart,
+    stat_trend_chart,
+    top_players_chart,
+    top_teams_chart,
 )
+from visualisation.stat_over_time import stat_trend_over_time
+from visualisation.top_teams import top_teams_all_time
+from visualisation.top_players_by_stat import top_players_by_stat
 
 
 def get_filtered_data(data, league, year):
-    team_df = data["team"][(data["team"]["league"] == league) & (data["team"]["year"] == year)].copy()
+    team_df = data["team"][
+        (data["team"]["league"] == league) & (data["team"]["year"] == year)
+    ].copy()
 
-    # Replace empty strings with NaN so dropna works correctly
     team_df.replace("", pd.NA, inplace=True)
 
-    # Preserve key columns even if they are all missing
     key_cols = ["Team", "Winning Percentage", "Total Wins"]
     other_cols = [col for col in team_df.columns if col not in key_cols]
-
-    # Drop only non-key columns that are fully missing
-    retained_cols = key_cols + [col for col in other_cols if not team_df[col].isna().all()]
+    retained_cols = key_cols + [
+        col for col in other_cols if not team_df[col].isna().all()
+    ]
     team_df = team_df[retained_cols]
 
     return {
-        "intro": data["intro"][(data["intro"]["league"] == league) & (data["intro"]["year"] == year)],
-        "meta": data["meta"][(data["meta"]["league"] == league) & (data["meta"]["year"] == year)],
-        "hitter": data["hitter"][(data["hitter"]["league"] == league) & (data["hitter"]["year"] == year)],
-        "pitcher": data["pitcher"][(data["pitcher"]["league"] == league) & (data["pitcher"]["year"] == year)],
+        "intro": data["intro"][
+            (data["intro"]["league"] == league) & (data["intro"]["year"] == year)
+        ],
+        "meta": data["meta"][
+            (data["meta"]["league"] == league) & (data["meta"]["year"] == year)
+        ],
+        "hitter": data["hitter"][
+            (data["hitter"]["league"] == league) & (data["hitter"]["year"] == year)
+        ],
+        "pitcher": data["pitcher"][
+            (data["pitcher"]["league"] == league) & (data["pitcher"]["year"] == year)
+        ],
         "team": team_df,
     }
 
 
-
-
 def build_sidebar(intro_df, meta_df):
-    """Construct sidebar content from intro and meta data"""
     sidebar = []
 
     h1_rows = intro_df[intro_df["type"] == "h1"]
     h2_rows = intro_df[intro_df["type"] == "h2"]
 
     for _, row in h1_rows.iterrows():
-        sidebar.append(html.H2(row["title"]))
+        sidebar.append(
+            html.H2(
+                row["title"],
+                id="sidebar-title",
+                style={"textAlign": "center"},
+            )
+        )
 
     grouped = h2_rows.groupby("title")
     for section_title, group in grouped:
         sidebar.append(html.Hr())
-        sidebar.append(html.H3(section_title))
-        for _, row in group.iterrows():
-            sidebar.append(html.P(row["paragraph"]))
+        sidebar.append(
+            html.H3(
+                section_title,
+                id=f"sidebar-info-header-{section_title}",
+                style={"textAlign": "center"},
+            )
+        )
+        for i, (_, row) in enumerate(group.iterrows()):
+            sidebar.append(
+                html.P(
+                    row["paragraph"], id=f"sidebar-info-paragraph-{section_title}-{i}"
+                )
+            )
 
     quote_text = meta_df["quote"].dropna().values
     if len(quote_text):
         sidebar.append(html.Hr())
         sidebar.append(html.H4("Season Quote"))
-        sidebar.append(html.Blockquote(
-            quote_text[0],
-            style={
-                "fontStyle": "italic",
-                "borderLeft": "4px solid #ccc",
-                "paddingLeft": "1rem",
-                "color": "#333",
-            },
-        ))
+        sidebar.append(
+            html.Blockquote(
+                quote_text[0],
+                id="sidebar-quote",
+                style={
+                    "fontStyle": "italic",
+                    "borderLeft": "4px solid #ccc",
+                    "paddingLeft": "1rem",
+                    "color": "#333",
+                },
+            )
+        )
 
     return sidebar
 
 
-def render_table(df, title, table_type="full"):
-    """Render a styled Dash DataTable"""
+def render_table(df, title, table_type="full", table_id=None):
     if df.empty:
-        return html.Div(f"No data available for {title}.")
+        return html.Div(f"No data available for {title}.", id=table_id)
 
     if table_type == "player":
         columns = [
@@ -83,48 +110,71 @@ def render_table(df, title, table_type="full"):
         ordered_cols = [col for col in priority_cols if col in df.columns] + other_cols
         columns = [{"name": col, "id": col} for col in ordered_cols]
 
-    return html.Div([
-        html.H4(title),
-        dash_table.DataTable(
-            columns=columns,
-            data=df.to_dict("records"),
-            style_cell={"textAlign": "left", "padding": "5px"},
-            style_header={"backgroundColor": "#f0f0f0", "fontWeight": "bold"},
-            page_size=25,
-        ),
-        html.Hr(),
-    ])
+    return html.Div(
+        [
+            html.H4(title),
+            dash_table.DataTable(
+                columns=columns,
+                data=df.to_dict("records"),
+                style_cell={"textAlign": "left", "padding": "5px"},
+                style_header={"backgroundColor": "#f0f0f0", "fontWeight": "bold"},
+                page_size=25,
+            ),
+            html.Hr(),
+        ],
+        id=table_id,
+    )
 
 
 def build_main_content(hitter_df, pitcher_df, team_df):
-    """Combine visualizations and tables into main content"""
-    return html.Div([
-        team_win_percentage_chart(team_df),
-        # hitter_stat_chart(hitter_df),
-        # pitcher_distribution_chart(pitcher_df),
-        render_table(hitter_df, "Best Hitter Statistics", table_type="player"),
-        render_table(pitcher_df, "Best Pitcher Statistics", table_type="player"),
-        render_table(team_df, "Team Statistics"),
-    ])
+    return html.Div(
+        [
+            html.Div(
+                team_win_percentage_chart(team_df), id="team-win-percentage-chart"
+            ),
+            html.Div(
+                render_table(
+                    team_df, "Team Statistics", table_id="team-statistics-table"
+                )
+            ),
+            html.Div(
+                render_table(
+                    hitter_df,
+                    "Best Hitter Statistics",
+                    table_type="player",
+                    table_id="hitter-statistics-table",
+                )
+            ),
+            html.Div(
+                render_table(
+                    pitcher_df,
+                    "Best Pitcher Statistics",
+                    table_type="player",
+                    table_id="pitcher-statistics-table",
+                )
+            ),
+        ]
+    )
 
 
 def update_dashboard(data, league, year):
-    """Main dashboard update logic"""
     if not league or not year:
-        return html.Div("Please select a league and year."), html.Div("No data available.")
+        return html.Div(
+            "Please select a league and year.", id="sidebar-intro-content"
+        ), html.Div("No data available.")
 
     filtered = get_filtered_data(data, league, year)
     sidebar = build_sidebar(filtered["intro"], filtered["meta"])
-    main_content = build_main_content(filtered["hitter"], filtered["pitcher"], filtered["team"])
+    main_content = build_main_content(
+        filtered["hitter"], filtered["pitcher"], filtered["team"]
+    )
     return sidebar, main_content
 
 
 def register_callbacks(app, data):
-    """Register all Dash callbacks"""
-
     @app.callback(
         Output("league-dropdown", "options"),
-        Input("league-dropdown", "id")  # dummy input to trigger on load
+        Input("league-dropdown", "id"),
     )
     def populate_league_options(_):
         leagues = sorted(data["team"]["league"].dropna().unique())
@@ -132,19 +182,80 @@ def register_callbacks(app, data):
 
     @app.callback(
         Output("year-dropdown", "options"),
-        Input("league-dropdown", "value")
+        Input("league-dropdown", "value"),
     )
     def update_year_options(selected_league):
         if not selected_league:
             return []
-        years = data["team"][data["team"]["league"] == selected_league]["year"].dropna().unique()
+        years = (
+            data["team"][data["team"]["league"] == selected_league]["year"]
+            .dropna()
+            .unique()
+        )
         return [{"label": str(year), "value": str(year)} for year in sorted(years)]
 
     @app.callback(
-        Output("intro-block", "children"),
-        Output("dynamic-content", "children"),
+        Output("sidebar-intro-content", "children"),
+        Output("team-win-percentage-chart", "children"),
+        Output("team-statistics-table", "children"),
+        Output("hitter-statistics-table", "children"),
+        Output("pitcher-statistics-table", "children"),
         Input("league-dropdown", "value"),
-        Input("year-dropdown", "value")
+        Input("year-dropdown", "value"),
     )
     def dashboard_callback(league, year):
-        return update_dashboard(data, league, year)
+        sidebar, main_content = update_dashboard(data, league, year)
+        return (
+            sidebar,
+            main_content.children[0],
+            main_content.children[1],
+            main_content.children[2],
+            main_content.children[3],
+        )
+
+    @app.callback(
+        Output("stat-select", "options"),
+        Input("role-select", "value"),
+    )
+    def update_stat_options(role):
+        df = data[role]
+        stats = sorted(df["Statistic"].dropna().unique())
+        return [{"label": stat, "value": stat} for stat in stats]
+
+    @app.callback(
+        Output("top-teams-all-time-chart", "children"),
+        Input("league-dropdown", "value"),
+    )
+    def update_top_teams_chart(league):
+        if not league:
+            return html.Div("Please select a league.")
+        team_df = top_teams_all_time(data["team"], league)
+        return html.Div(
+            top_teams_chart(team_df, league=league), id="chart-top-teams-all-time"
+        )
+
+    @app.callback(
+        Output("historical-charts-container", "children"),
+        Input("league-dropdown", "value"),
+        Input("role-select", "value"),
+        Input("stat-select", "value"),
+    )
+    def update_historical_charts(league, role, stat):
+        if not league or not stat:
+            return html.Div("Please select a league and statistic.")
+
+        player_df = top_players_by_stat(data[role], league, role, stat)
+        trend_df = stat_trend_over_time(data[role], league, role, stat)
+
+        return html.Div(
+            [
+                html.Div(
+                    top_players_chart(player_df, stat, league=league),
+                    id="chart-top-players-by-stat",
+                ),
+                html.Div(
+                    stat_trend_chart(trend_df, stat, league=league),
+                    id="chart-stat-trend-over-time",
+                ),
+            ]
+        )

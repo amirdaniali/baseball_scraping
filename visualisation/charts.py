@@ -3,7 +3,7 @@ import pandas as pd
 from dash import html, dcc
 
 
-def team_win_percentage_chart(team_df):
+def team_win_percentage_chart(team_df, year=1990):
     """Top 10 teams by winning percentage"""
     if team_df.empty or "Winning Percentage" not in team_df.columns:
         return html.Div("No team data available for visualization.")
@@ -18,7 +18,7 @@ def team_win_percentage_chart(team_df):
         x="Winning Percentage",
         y="Team",
         orientation="h",
-        title="Top 10 Teams by Winning Percentage",
+        title=f"Top 10 Teams in {year}",
         text=use_text,
         color=use_text if use_text else "Winning Percentage",
         color_continuous_scale="Blues",
@@ -28,38 +28,31 @@ def team_win_percentage_chart(team_df):
     return html.Div([dcc.Graph(figure=fig)])
 
 
-def hitter_stat_chart(hitter_df):
-    """Top hitters by statistic value"""
-    if hitter_df.empty or "Statistic Value" not in hitter_df.columns:
-        return html.Div("No hitter data available for visualization.")
-
-    top_hitters = hitter_df.sort_values("Statistic Value", ascending=False).head(10)
+def top_teams_chart(df, league):
     fig = px.bar(
-        top_hitters,
-        x="Statistic Value",
-        y="Name",
-        color="Statistic",
-        title="Top 10 Hitters by Statistic Value",
-        hover_data=["Team", "Statistic"],
+        df,
+        x="Total Wins",
+        y="Team",
         orientation="h",
+        title=f"{league} Top 10 Teams by Total Wins",
     )
     fig.update_layout(yaxis=dict(autorange="reversed"))
-
     return html.Div([dcc.Graph(figure=fig)])
 
 
-def pitcher_distribution_chart(pitcher_df):
-    """Distribution of pitcher statistics"""
-    if pitcher_df.empty or "Statistic Value" not in pitcher_df.columns:
-        return html.Div("No pitcher data available for visualization.")
-
-    fig = px.box(
-        pitcher_df,
-        x="Statistic",
-        y="Statistic Value",
-        points="all",
-        title="Distribution of Pitching Statistics",
-        color="Statistic",
+def top_players_chart(df, stat, league):
+    fig = px.bar(
+        df,
+        x="Statistic Value",
+        y="Name",
+        color="Team",
+        orientation="h",
+        title=f"{league} Top 10 Players by {stat}",
     )
+    fig.update_layout(yaxis=dict(autorange="reversed"))
+    return html.Div([dcc.Graph(figure=fig)])
 
+
+def stat_trend_chart(df, stat, league):
+    fig = px.line(df, x="year", y="Statistic Value", title=f"{league} {stat} Over Time")
     return html.Div([dcc.Graph(figure=fig)])
