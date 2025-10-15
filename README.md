@@ -49,44 +49,46 @@ some commands that are available are:
 #### Import CSVs into SQLite
 
 ```bash
-python cli.py import path table_name # import one csv file
+# Import all CSVs
 python cli.py import --all
+
+# Import a single CSV
+python cli.py import data/csv/hitter_stats.csv hitter_stats
 ```
 
+#### CLI Usage
 
-#### Run Custom Queries
 
 ```bash
-python cli.py query "SELECT Name, Statistic, Team FROM hitter_stats WHERE Statistic = 'Batting Average' ORDER BY StatValue DESC LIMIT 10"
-python cli.py query "SELECT Name, Statistic, Team FROM pitcher_stats WHERE Statistic = 'Complete Games' ORDER BY StatValue DESC LIMIT 10"
-python cli.py query "SELECT title, paragraph FROM intro_content WHERE year = '1882'"
-python cli.py query "SELECT Team, division, Payroll FROM team_standings WHERE division = 'East'"
-python cli.py query "SELECT Team, Winning Percentage FROM other_stats ORDER BY Winning Percentage DESC"
-python cli.py query "SELECT h.year, h.Name, h.Team, h.Statistic, r.title FROM hitter_stats h JOIN team_review_hitter r ON h.Team = r.Team AND h.year = r.year WHERE h.Statistic = 'Batting Average' ORDER BY h.StatValue DESC LIMIT 10"
-python cli.py query "SELECT p.Name, p.Statistic, p.Team, r.subtitle FROM pitcher_stats p JOIN team_review_pitcher r ON p.Team = r.Team AND p.year = r.year WHERE p.Statistic = 'Complete Games' ORDER BY p.StatValue DESC"
-python cli.py query "PRAGMA table_info(hitter_stats)"
-python cli.py query "SELECT COUNT(*) FROM pitcher_stats"
-python cli.py query "SELECT DISTINCT year FROM team_standings"
-python cli.py query "SELECT * FROM other_stats WHERE guesses = '1'"
-python cli.py query "SELECT Name, Statistic, Team FROM hitter_stats WHERE Statistic = 'Base on Balls' ORDER BY StatValue DESC LIMIT 10"
-python cli.py query "SELECT Name, Statistic, Team FROM hitter_stats WHERE Statistic = 'Home Runs' ORDER BY StatValue DESC LIMIT 10"
-python cli.py query "SELECT Team, Statistic, Total Hits FROM team_review_hitter WHERE Statistic = 'Hits' ORDER BY Total Hits DESC"
-python cli.py query "SELECT Team, Statistic, Total Runs FROM team_review_hitter WHERE Statistic = 'Runs' ORDER BY Total Runs DESC"
-python cli.py query "SELECT Team, Total Wins, division FROM team_standings ORDER BY Total Wins DESC"
-python cli.py query "SELECT Team, Total Loses, division FROM team_standings ORDER BY Total Loses DESC"
+python cli.py query --file ./queries/top_hitters.sql
+
+# Most complete games
+python cli.py query --file ./queries/top_complete_games.sql
+
+# Intro content for 1882
+python cli.py query --file queries/intro_1882.sql
+```bash
 
 
+```bash
+# Run SQL from file: Standings by division
+python cli.py query --file queries/standings_east.sql
+
+# Run SQL from file: Other stats with winning percentage
+python cli.py query --file queries/other_stats_wp.sql
 ```
-
-
-#### Run Demo Queries
 
 ```bash
 
-python cli.py demo top_hitters
-python cli.py demo pitcher_review
-python cli.py demo intro_year --year 1882
-python cli.py demo metadata
+# Run SQL from file: Join pitcher stats with team review
+python cli.py query --file queries/join_pitcher_review.sql
+```
+
+
+```bash
+# Run SQL from file: Standings queries
+python cli.py query --file queries/team_standings_wins.sql
+python cli.py query --file queries/team_standings_losses.sql
 ```
 
 
@@ -127,3 +129,7 @@ All output files live in the `/data` directory:
 `/data/csv/` : CSV exports
 `/data/json/<LeagueName>/` : JSON files per league/year
 `/data/sqlite.db` : SQLite database
+
+
+
+The `scraper.py` script is responsible for collecting baseball data from external source (https://www.baseball-almanac.com/), transforming it into structured formats, and saving it locally for analysis.

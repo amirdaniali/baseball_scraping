@@ -4,14 +4,6 @@ from pathlib import Path
 from analysis.csv_importer import import_csv
 from analysis.query_runner import run_query
 
-from analysis.demo_queries import (
-    demo_top_hitters,
-    demo_pitcher_team_review,
-    demo_intro_by_year,
-    demo_metadata_summary,
-)
-
-
 from storage.save_load import CSV_DIR
 
 
@@ -40,6 +32,14 @@ def run_sql_query(sql):
         print(" | ".join(str(cell) for cell in row))
 
 
+def run_sql_file(path):
+    try:
+        sql = Path(path).read_text()
+        run_sql_query(sql)
+    except Exception as e:
+        print(f"Failed to read SQL file {path}: {e}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Baseball CLI")
     subparsers = parser.add_subparsers(dest="command")
@@ -54,19 +54,8 @@ def main():
     )
 
     query_parser = subparsers.add_parser("query")
-    query_parser.add_argument("sql", help="SQL query to run")
-
-    demo_parser = subparsers.add_parser("demo", help="Run predefined demo queries")
-    demo_parser.add_argument(
-        "name",
-        choices=["top_hitters", "pitcher_review", "intro_year", "metadata"],
-        help="Name of the demo to run",
-    )
-    demo_parser.add_argument(
-        "--year",
-        default="1882",
-        help="Year filter for intro content (used with intro_year demo)",
-    )
+    query_parser.add_argument("sql", nargs="?", help="SQL query to run")
+    query_parser.add_argument("--file", help="Path to SQL file")
 
     args = parser.parse_args()
 
@@ -77,17 +66,14 @@ def main():
             import_single_csv(args.csv_path, args.table_name)
         else:
             print("Provide either --all or both csv_path and table_name.")
+
     elif args.command == "query":
-        run_sql_query(args.sql)
-    elif args.command == "demo":
-        if args.name == "top_hitters":
-            demo_top_hitters()
-        elif args.name == "pitcher_review":
-            demo_pitcher_team_review()
-        elif args.name == "intro_year":
-            demo_intro_by_year(args.year)
-        elif args.name == "metadata":
-            demo_metadata_summary()
+        if args.file:
+            run_sql_file(args.file)
+        elif args.sql:
+            run_sql_query(args.sql)
+        else:
+            print("Provide either a SQL string or --file path to a SQL file.")
     else:
         parser.print_help()
 
