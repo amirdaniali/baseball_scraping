@@ -1,7 +1,16 @@
 from dash import html, dcc
 
 
-def build_layout(options):
+def build_layout(data, default_league, default_year):
+    league_options = [
+        {"label": league, "value": league}
+        for league in sorted(data["team"]["league"].dropna().unique())
+    ]
+    year_options = [
+        {"label": str(year), "value": str(year)}
+        for year in sorted(data["team"][data["team"]["league"] == default_league]["year"].dropna().unique())
+    ]
+
     return html.Div(
         style={
             "display": "flex",
@@ -29,19 +38,28 @@ def build_layout(options):
                     html.H1("Baseball Stats Dashboard", style={"fontSize": "1.8rem"}),
                     html.P("Explore historical baseball data by league and year."),
                     html.Div([
-                    html.Div([
-                        html.Label("Select League"),
-                        dcc.Dropdown(id="league-dropdown", value="National League", placeholder="Choose a league"),
+                        html.Div([
+                            html.Label("Select League"),
+                            dcc.Dropdown(
+                                id="league-dropdown",
+                                options=league_options,
+                                value=default_league,
+                                placeholder="Choose a league",
+                            ),
+                        ]),
+                        html.Div([
+                            html.Label("Select Year"),
+                            dcc.Dropdown(
+                                id="year-dropdown",
+                                options=year_options,
+                                value=default_year,
+                                placeholder="Choose a year",
+                                searchable=True,
+                            ),
+                        ]),
+                        html.Hr(),
+                        html.Div(id="intro-block"),
                     ]),
-                    html.Div([
-                        html.Label("Select Year"),
-                        dcc.Dropdown(id="year-dropdown", value="2025", placeholder="Choose a year"),
-                    ]),
-                    
-                    html.Div(id="intro-block"),
-                    html.Div(id="dynamic-content"),
-                ]),
-                    html.Div(id="intro-block"),
                 ],
             ),
             # Main content
@@ -55,7 +73,6 @@ def build_layout(options):
                     "borderRadius": "10px",
                     "boxShadow": "0 4px 12px rgba(0,0,0,0.05)",
                     "minHeight": "400px",
-                    "overflowX": "auto",  # enables horizontal scroll
                 },
                 children=[
                     html.H2("Data & Visualizations", style={"marginBottom": "1rem"}),

@@ -51,4 +51,8 @@ HEADER_NORMALIZATION = {
     "North" : "Division",
     "West" : "Division",
     "Central" : "Division",
+
+    "Losses" : "Total Losses",
+    "Ties" : "Total Ties",
+    "Wins" : "Total Wins",
 }

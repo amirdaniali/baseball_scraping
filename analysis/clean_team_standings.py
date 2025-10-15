@@ -3,82 +3,61 @@ from pathlib import Path
 
 CSV_DIR = Path(__file__).parent.parent / "data/csv"
 
-import pandas as pd
-import re
-from fractions import Fraction
-
 def cleaner(value):
     if isinstance(value, str):
-        # Replace "½" with ".5" and try converting
-        value = value.replace('½', '.5')
-        value = value.replace(",", "").strip()
-        value = value.replace('"', "").strip()
+        value = value.replace('½', '.5').replace(",", "").replace('"', "").strip()
         try:
             return pd.to_numeric(value, errors='coerce')
         except:
             return None
-
-
+    return value
 
 pd.set_option("display.max_columns", None)
 pd.set_option("display.width", 120)
 
-
 def clean_team_standings():
-    """The team standings table isn't as common on the website. most of the entries don't have the table or have just some columns. as such, aggressive dropna()s will remove most of the useful data."""
-
     path = CSV_DIR / "team_standings.csv"
     df = pd.read_csv(path)
 
+    # Drop duplicates and rows missing critical identifiers
     df = df.drop_duplicates()
     df = df.dropna(subset=["year", "league", "Team"], how="any")
+
+    # Normalize column names (strip whitespace)
     
+    df.columns = [col.strip() for col in df.columns]
 
-    # Normalize numeric columns
-    # Apply to your DataFrame column
-    try:
-        numeric_cols = [
-            "Total Wins",
-            "Total Loses",
-            "Total Ties",
-            "Games Behind",
-            "Winning Percentage",
-            "Wins",
-            "Losses",
-            "Ties",
-        ]
-        for col in numeric_cols:
-            if col in df.columns:
-                df[col] = df[col].apply(cleaner)
-    except ValueError as e:
-        print(f"error: {col}, ", e)
+    # Fix common column name typo if present
+    if "Total Loses" in df.columns:
+        df.rename(columns={"Total Loses": "Total Losses"}, inplace=True)
 
+
+    # Clean numeric columns
+    numeric_cols = [
+        "Total Wins",
+        "Total Losses",
+        "Total Ties",
+        "Games Behind",
+        "Winning Percentage",
+        "Payroll",
+    ]
+    for col in numeric_cols:
+        if col in df.columns:
+            df[col] = df[col].apply(cleaner)
+
+    # Add Total Games column
+    if all(col in df.columns for col in ["Total Wins", "Total Losses"]):
+        df["Total Games"] = df["Total Wins"].fillna(0) + df["Total Losses"].fillna(0)
+        if "Total Ties" in df.columns:
+            df["Total Games"] += df["Total Ties"].fillna(0)
+
+    # Clean string columns
+    df["Team"] = df["Team"].astype(str).str.strip()
     df["year"] = df["year"].astype(str)
-    df["Games Behind"] = df["Games Behind"].fillna(0)
+    df["league"] = df["league"].astype(str).str.strip()
 
-    # Strip whitespace from strings
-
-    df["Team"] = df["Team"].str.strip()
-
+    # Fill missing 'Games Behind' with 0
+    if "Games Behind" in df.columns:
+        df["Games Behind"] = df["Games Behind"].fillna(0)
 
     return df
-
-
-if __name__ == "__main__":
-    path = CSV_DIR / "team_standings.csv"
-    df = pd.read_csv(path)
-
-    print("\nRaw Team Standings")
-    print(df.head())
-    print(f"Initial shape: {df.shape}")
-
-    df = clean_team_standings()
-    
-    print(f"Cleaned shape: {df.shape}")
-    print("\nCleaned Team Standings")
-    print(df.head())
-
-    # Example: Top teams by win percentage
-    top_wp = df.sort_values("Winning Percentage", ascending=False).head(10)
-    print("\nTop Teams by Win %")
-    print(top_wp[["Team", "Winning Percentage", "Division"]])

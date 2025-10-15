@@ -1,6 +1,7 @@
 numpy
 matplotlib
 plotly
+plotly-express
 dash
 gunicorn
 selenium
