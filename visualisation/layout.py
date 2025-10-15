@@ -201,6 +201,6 @@ def build_footer():
         },
         children=[
             html.Div("© Made by Amir Daniali."),
-            html.Div("Code the Dream Python Course."),
+            html.Div("2025 Code the Dream Python Course."),
         ],
     )

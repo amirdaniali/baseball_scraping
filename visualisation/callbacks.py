@@ -77,14 +77,21 @@ def build_sidebar(intro_df, meta_df):
     quote_text = meta_df["quote"].dropna().values
     if len(quote_text):
         sidebar.append(html.Hr())
-        sidebar.append(html.H4("Season Quote"))
+        sidebar.append(
+            html.H4(
+                "Season Quote",
+                style={"textAlign": "center"},
+            )
+        )
         sidebar.append(
             html.Blockquote(
                 quote_text[0],
                 id="sidebar-quote",
                 style={
                     "fontStyle": "italic",
-                    "borderLeft": "4px solid #ccc",
+                    "fontFamily": "Roboto Slab, Book Antiqua, Palatino, serif",
+                    "fontSize": "1.3rem",
+                    "borderLeft": "6px solid #ccc",
                     "paddingLeft": "1rem",
                     "color": "#333",
                 },
