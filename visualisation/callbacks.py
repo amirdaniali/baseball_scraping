@@ -15,48 +15,33 @@ def update_dashboard(league_year):
     intro = data["intro"]
     meta = data["meta"]
     hitter = data["hitter"]
+    pitcher = data["pitcher"]
     team = data["team"]
 
     # Sidebar content (unchanged)
     intro_texts = intro[(intro["league"] == league) & (intro["year"] == year)]
     h1_rows = intro_texts[intro_texts["type"] == "h1"]
     h2_rows = intro_texts[intro_texts["type"] == "h2"]
+    meta_df = meta[(meta["league"] == league) & (meta["year"] == year)]
+    hitter_df = hitter[(hitter["league"] == league) & (hitter["year"] == year)]
+    pitcher_df = pitcher[(pitcher["league"] == league) & (pitcher["year"] == year)]
+    print(pitcher_df)
+    team_df = team[(team["league"] == league) & (team["year"] == year)]
 
     sidebar = []
     for _, row in h1_rows.iterrows():
         sidebar.append(html.H2(row["title"]))
     grouped = h2_rows.groupby("title")
     for section_title, group in grouped:
+        sidebar.append(html.Hr())
         sidebar.append(html.H3(section_title))
         for _, row in group.iterrows():
             sidebar.append(html.P(row["paragraph"]))
 
-    # Filtered tables
-    meta_df = meta[(meta["league"] == league) & (meta["year"] == year)]
-    hitter_df = hitter[(hitter["league"] == league) & (hitter["year"] == year)]
-    team_df = team[(team["league"] == league) & (team["year"] == year)]
-
-    def render_table(df, title):
-        if df.empty:
-            return html.Div(f"No data available for {title}.")
-        return html.Div(
-            [
-                html.H4(title),
-                dash_table.DataTable(
-                    columns=[{"name": col, "id": col} for col in df.columns],
-                    data=df.to_dict("records"),
-                    style_table={"overflowX": "auto"},
-                    style_cell={"textAlign": "left", "padding": "5px"},
-                    style_header={"backgroundColor": "#f0f0f0", "fontWeight": "bold"},
-                    page_size=10,
-                ),
-                html.Hr(),
-            ]
-        )
-
     quote_text = meta_df["quote"].dropna().values
     quote_block = html.Div(
         [
+            html.Hr(),
             html.H4("Season Quote"),
             html.Blockquote(
                 quote_text[0] if len(quote_text) else "No quote available.",
@@ -67,13 +52,60 @@ def update_dashboard(league_year):
                     "color": "#333",
                 },
             ),
-            html.Hr(),
         ]
     )
+    sidebar.append(quote_block)
+
+    # Filtered tables
+
+    def render_table(df, title, table_type="player"):
+        if df.empty:
+            return html.Div(f"No data available for {title}.")
+        if table_type == "player":
+            return html.Div(
+                [
+                    html.H4(title),
+                    dash_table.DataTable(
+                        columns=[
+                            {"name": col, "id": col}
+                            for col in ["Statistic", "Team", "Name", "Statistic Value"]
+                        ],
+                        # columns=[{"name": col, "id": col} for col in df.columns],
+                        data=df.to_dict("records"),
+                        style_table={"overflowX": "auto"},
+                        style_cell={"textAlign": "left", "padding": "5px"},
+                        style_header={
+                            "backgroundColor": "#f0f0f0",
+                            "fontWeight": "bold",
+                        },
+                        page_size=10,
+                    ),
+                    html.Hr(),
+                ]
+            )
+        return html.Div(
+            [
+                html.H4(title),
+                dash_table.DataTable(
+                    columns=[
+                        {"name": col, "id": col}
+                        for col in ["Name", "Team", "Statistic", "Statistic Value"]
+                    ],
+                    # columns=[{"name": col, "id": col} for col in df.columns],
+                    data=df.to_dict("records"),
+                    style_table={"overflowX": "auto"},
+                    style_cell={"textAlign": "left", "padding": "5px"},
+                    style_header={"backgroundColor": "#f0f0f0", "fontWeight": "bold"},
+                    page_size=25,
+                ),
+                html.Hr(),
+            ]
+        )
+
     main_content = html.Div(
         [
-            quote_block,
-            render_table(hitter_df, "Player Statistics"),
+            render_table(hitter_df, "Hitter Statistics", table_type="player"),
+            render_table(pitcher_df, "Pitcher Statistics", table_type="player"),
             render_table(team_df, "Team Statistics"),
         ]
     )

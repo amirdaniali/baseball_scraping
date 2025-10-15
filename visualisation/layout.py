@@ -51,9 +51,7 @@ def build_layout(options):
                     "overflowX": "auto",  # enables horizontal scroll
                 },
                 children=[
-                    html.H2(
-                        "Interactive Visualizations", style={"marginBottom": "1rem"}
-                    ),
+                    html.H2("Data & Visualizations", style={"marginBottom": "1rem"}),
                     html.Div(id="dynamic-content"),
                 ],
             ),

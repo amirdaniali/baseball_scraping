@@ -6,6 +6,7 @@ CSV_DIR = Path(__file__).parent.parent / "data/csv"
 
 
 def clean_hitter_stats():
+
     path = CSV_DIR / "hitter_stats.csv"
     df = pd.read_csv(path)
 
