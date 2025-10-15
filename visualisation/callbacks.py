@@ -16,7 +16,7 @@ def update_dashboard(league_year):
     meta = data["meta"]
     hitter = data["hitter"]
     pitcher = data["pitcher"]
-    team = data["team"]
+    # team = data["team"]
 
     # Sidebar content (unchanged)
     intro_texts = intro[(intro["league"] == league) & (intro["year"] == year)]
@@ -26,7 +26,7 @@ def update_dashboard(league_year):
     hitter_df = hitter[(hitter["league"] == league) & (hitter["year"] == year)]
     pitcher_df = pitcher[(pitcher["league"] == league) & (pitcher["year"] == year)]
     print(pitcher_df)
-    team_df = team[(team["league"] == league) & (team["year"] == year)]
+    # team_df = team[(team["league"] == league) & (team["year"] == year)]
 
     sidebar = []
     for _, row in h1_rows.iterrows():
