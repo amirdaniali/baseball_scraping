@@ -133,7 +133,7 @@ def render_table(df, title, table_type="full", table_id=None):
     )
 
 
-def build_main_content(hitter_df, pitcher_df, team_df):
+def build_main_content(hitter_df, pitcher_df, team_df, year, league):
     return html.Div(
         [
             html.Div(
@@ -141,13 +141,15 @@ def build_main_content(hitter_df, pitcher_df, team_df):
             ),
             html.Div(
                 render_table(
-                    team_df, "Team Statistics", table_id="team-statistics-table"
+                    team_df,
+                    f"{year} {league} Team Standings",
+                    table_id="team-statistics-table",
                 )
             ),
             html.Div(
                 render_table(
                     hitter_df,
-                    "Best Hitter Statistics",
+                    f"{year} {league} Best Hitter Statistics",
                     table_type="player",
                     table_id="hitter-statistics-table",
                 )
@@ -155,7 +157,7 @@ def build_main_content(hitter_df, pitcher_df, team_df):
             html.Div(
                 render_table(
                     pitcher_df,
-                    "Best Pitcher Statistics",
+                    f"{year} {league} Best Pitcher Statistics",
                     table_type="player",
                     table_id="pitcher-statistics-table",
                 )
@@ -173,7 +175,11 @@ def update_dashboard(data, league, year):
     filtered = get_filtered_data(data, league, year)
     sidebar = build_sidebar(filtered["intro"], filtered["meta"])
     main_content = build_main_content(
-        filtered["hitter"], filtered["pitcher"], filtered["team"]
+        filtered["hitter"],
+        filtered["pitcher"],
+        filtered["team"],
+        year=year,
+        league=league,
     )
     return sidebar, main_content
 
