@@ -126,10 +126,6 @@ The project is organized into three main modules:
 
 All output files live in the `/data` directory:
 
-`/data/csv/` : CSV exports
-`/data/json/<LeagueName>/` : JSON files per league/year
-`/data/sqlite.db` : SQLite database
-
 
 
 The `scraper.py` script is responsible for collecting baseball data from external source (https://www.baseball-almanac.com/), transforming it into structured formats, and saving it locally for analysis.
