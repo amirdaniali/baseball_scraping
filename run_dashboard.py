@@ -20,3 +20,6 @@ app = Dash(__name__)
 server = app.server
 app.layout = build_layout(data, DEFAULT_LEAGUE, DEFAULT_YEAR)
 register_callbacks(app, data)
+
+if __name__ == "__main__":
+    app.run(debug=True)
