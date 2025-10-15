@@ -1,0 +1,27 @@
+id,league,year,year_id,Division,Games Behind,Payroll,Team,Total Loses,Total Wins,Winning Percentage
+1,American League,1991,1,East,0,"$31,016,809",Toronto Blue Jays,71,91,.562
+2,American League,1991,2,East,7,"$24,169,179",Detroit Tigers,78,84,.519
+3,American League,1991,3,East,7,"$35,501,537",Boston Red Sox,78,84,.519
+4,American League,1991,4,East,8,"$23,771,616",Milwaukee Brewers,79,83,.512
+5,American League,1991,5,East,20,"$31,390,000",New York Yankees,91,71,.438
+6,American League,1991,6,East,24,"$14,396,669",Baltimore Orioles,95,67,.414
+7,American League,1991,7,East,34,"$13,133,428",Cleveland Indians,105,57,.352
+8,American League,1991,8,West,0,"$22,514,814",Minnesota Twins,67,95,.586
+9,American League,1991,9,West,8,"$16,694,979",Chicago White Sox,75,87,.537
+10,American League,1991,10,West,10,"$22,525,314",Texas Rangers,77,85,.525
+11,American League,1991,11,West,11,"$39,906,167",Oakland Athletics,78,84,.519
+12,American League,1991,12,West,12,"$16,431,833",Seattle Mariners,79,83,.512
+13,American League,1991,13,West,13,"$31,117,661",Kansas City Royals,80,82,.506
+14,American League,1991,14,West,14,"$31,996,561",California Angels,81,81,.500
+15,National League,1991,1,East,0,"$25,288,666",Pittsburgh Pirates,64,98,.605
+16,National League,1991,2,East,14,"$22,327,087",St. Louis Cardinals,78,84,.519
+17,National League,1991,3,East,20,"$20,414,332",Philadelphia Phillies,84,78,.481
+18,National League,1991,4,East,20,"$26,568,867",Chicago Cubs,83,77,.481
+19,National League,1991,5,East,20½,"$32,417,502",New York Mets,84,77,.478
+20,National League,1991,6,East,26½,"$16,702,984",Montreal Expos,90,71,.441
+21,National League,1991,7,West,0,"$21,223,830",Atlanta Braves,68,94,.580
+22,National League,1991,8,West,1,"$35,557,927",Los Angeles Dodgers,69,93,.574
+23,National League,1991,9,West,10,"$23,323,558",San Diego Padres,78,84,.519
+24,National League,1991,10,West,19,"$32,111,053",San Francisco Giants,87,75,.463
+25,National League,1991,11,West,20,"$26,224,166",Cincinnati Reds,88,74,.457
+26,National League,1991,12,West,29,"$12,009,514",Houston Astros,97,65,.401
