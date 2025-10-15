@@ -1,9 +1,8 @@
 numpy
 matplotlib
 plotly
-seaborn
 dash
 gunicorn
-streamlit
 selenium
 webdriver-manager
+pandas
