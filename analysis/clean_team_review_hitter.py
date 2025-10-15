@@ -12,17 +12,18 @@ def clean_team_review_hitter():
     path = CSV_DIR / "team_review_hitter.csv"
     df = pd.read_csv(path)
 
+    return df
+
+
+if __name__ == "__main__":
+    path = CSV_DIR / "team_review_hitter.csv"
+    df = pd.read_csv(path)
+
     print("Raw Team Review Hitter")
     print(df.head())
-
+    df = clean_team_review_hitter()
     games_by_team = (
         df.groupby("Team")["Total Games"].sum().sort_values(ascending=False).head(10)
     )
     print("\nTop Teams by Total Games Played")
     print(games_by_team)
-
-    return df
-
-
-if __name__ == "__main__":
-    clean_team_review_hitter()

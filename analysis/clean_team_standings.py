@@ -8,7 +8,7 @@ pd.set_option("display.width", 120)
 
 
 def clean_team_standings():
-    """the team standings table isn't as common on the website. most of the entries don't have the table or have just some columns. as such, aggressive dropna()s will remove most of the useful data."""
+    """The team standings table isn't as common on the website. most of the entries don't have the table or have just some columns. as such, aggressive dropna()s will remove most of the useful data."""
 
     path = CSV_DIR / "team_standings.csv"
     df = pd.read_csv(path)
@@ -37,7 +37,6 @@ def clean_team_standings():
 
     df["Team"] = df["Team"].str.strip()
     df["division"] = df["division"].fillna("").str.strip()
-    df["guesses"] = df["guesses"].fillna("")
 
     print(f"Cleaned shape: {df.shape}")
     print("\nCleaned Team Standings")

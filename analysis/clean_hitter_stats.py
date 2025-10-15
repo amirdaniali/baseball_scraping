@@ -9,10 +9,6 @@ def clean_hitter_stats():
     path = CSV_DIR / "hitter_stats.csv"
     df = pd.read_csv(path)
 
-    print("\nRaw Hitter Stats")
-    print(df.head())
-    print(f"Shape before cleaning: {df.shape}")
-
     # Drop duplicates
     df = df.drop_duplicates()
 
@@ -21,7 +17,6 @@ def clean_hitter_stats():
 
     # Fill optional fields
     df["Top 25"] = df["Top 25"].fillna("Top 25")
-    df["guesses"] = df["guesses"].fillna("")
 
     # Normalize column types
     df["Statistic Value"] = pd.to_numeric(df["Statistic Value"], errors="coerce")
@@ -29,8 +24,19 @@ def clean_hitter_stats():
 
     # Strip whitespace from strings
     df["Name"] = df["Name"].str.strip()
-    df["Statistic"] = df["Statistic"].str.strip()
     df["Team"] = df["Team"].str.strip()
+
+    return df
+
+
+if __name__ == "__main__":
+    path = CSV_DIR / "hitter_stats.csv"
+    df = pd.read_csv(path)
+
+    print("\nRaw Hitter Stats")
+    print(df.head())
+    print(f"Shape before cleaning: {df.shape}")
+    df = clean_hitter_stats()
 
     print(f"Shape after cleaning: {df.shape}")
     print("\nCleaned Hitter Stats")
@@ -44,9 +50,3 @@ def clean_hitter_stats():
     )
     print("\nTop Doubles")
     print(top_doubles[["Name", "Team", "Statistic Value"]])
-
-    return df
-
-
-if __name__ == "__main__":
-    clean_hitter_stats()

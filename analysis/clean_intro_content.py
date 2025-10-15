@@ -9,31 +9,27 @@ def clean_intro_content():
     path = CSV_DIR / "intro_content.csv"
     df = pd.read_csv(path)
 
-    print("\n--- Raw Intro Content ---")
-    print(df.head())
-    print(f"Initial shape: {df.shape}")
-
-    df = df.drop_duplicates()
-    df = df.dropna(subset=["year", "league", "type", "title"], how="any")
-
-    df["paragraph"] = df["paragraph"].fillna("").str.strip()
-    df["title"] = df["title"].str.strip()
-    df["type"] = df["type"].str.strip()
-
-    # Sort for readability
-    df = df.sort_values(by=["year", "type", "h2_index", "para_index"])
-
-    print(f"Cleaned shape: {df.shape}")
-    print("\n--- Cleaned Intro Content ---")
-    print(df.head())
-
-    # Example: Count of entries per year
-    counts = df.groupby("year")["paragraph"].count()
-    print("\n--- Paragraph Count by Year ---")
-    print(counts)
+    df.columns = df.columns.str.strip()
+    df["league"] = df["league"].astype(str).str.strip()
+    df["year"] = df["year"].astype(str).str.strip()
+    df["type"] = df["type"].astype(str).str.strip()
+    df["title"] = df["title"].fillna("").astype(str).str.strip()
+    df["paragraph"] = df["paragraph"].fillna("").astype(str).str.strip()
 
     return df
 
 
 if __name__ == "__main__":
-    clean_intro_content()
+    path = CSV_DIR / "intro_content.csv"
+    df = pd.read_csv(path)
+
+    print("\n--- Raw Intro Content ---")
+    print(df.head())
+    print(f"Initial shape: {df.shape}")
+
+    df = clean_intro_content()
+    counts = df.groupby("year")["paragraph"].count()
+
+    # Example: Count of entries per year
+    print("\nParagraph Count by Year")
+    print(counts)
