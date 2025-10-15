@@ -1,3 +1,9 @@
+## Amir Daniali
+## Code the Dream
+## Final Webscraping Project
+## Week 14
+## First Part: Data Scraping
+
 from scraping.scrape_all import scrape_all_leagues
 from storage.save_load import load_all_data
 from storage.export_csv import export_to_csv

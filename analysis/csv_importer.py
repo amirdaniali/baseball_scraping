@@ -1,10 +1,10 @@
 import csv
-import sqlite3
 from .db_config import get_connection
 from .schema import infer_column_types
 
 
-def import_csv(csv_path, table_name):
+def import_csv(csv_path, table_name) -> None:
+    """This module takes a csv file path and a table name and imports that csv file into the table inside the db connection."""
     conn = get_connection()
     cursor = conn.cursor()
 

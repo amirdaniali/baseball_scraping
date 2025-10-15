@@ -1,5 +1,3 @@
-import pandas as pd
-from storage.save_load import CSV_DIR
 from analysis.clean_intro_content import clean_intro_content
 from analysis.clean_meta import clean_meta
 from analysis.clean_hitter_stats import clean_hitter_stats

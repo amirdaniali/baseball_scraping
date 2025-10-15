@@ -78,7 +78,7 @@ def update_dashboard(league_year):
                             "backgroundColor": "#f0f0f0",
                             "fontWeight": "bold",
                         },
-                        page_size=10,
+                        page_size=25,
                     ),
                     html.Hr(),
                 ]
@@ -104,8 +104,8 @@ def update_dashboard(league_year):
 
     main_content = html.Div(
         [
-            render_table(hitter_df, "Hitter Statistics", table_type="player"),
-            render_table(pitcher_df, "Pitcher Statistics", table_type="player"),
+            render_table(hitter_df, "Best Hitter Statistics", table_type="player"),
+            render_table(pitcher_df, "Best Pitcher Statistics", table_type="player"),
             render_table(team_df, "Team Statistics"),
         ]
     )

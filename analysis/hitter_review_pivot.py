@@ -7,7 +7,8 @@ pd.set_option("display.max_columns", None)
 pd.set_option("display.width", 120)
 
 
-def clean_team_review_hitter_pivot():
+def clean_team_review_hitter_pivot() -> pd.DataFrame:
+    """A pivot table generated for the visualtion stage"""
     path = CSV_DIR / "team_review_hitter.csv"
     df = pd.read_csv(path)
 
