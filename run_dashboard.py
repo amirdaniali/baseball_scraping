@@ -2,7 +2,7 @@
 ## Code the Dream
 ## Final Webscraping Project
 ## Week 14
-## Final Part: Data Visualisation.
+## Final Part: Data Visualisation
 
 from visualisation.app import app
 

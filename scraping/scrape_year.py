@@ -122,7 +122,7 @@ def extract_tables(wrapper) -> tuple:
                             if "banner middle" in cls and cell.get_attribute("rowspan"):
                                 if "east" in text.lower() or "west" in text.lower():
                                     current_division = text
-                                    headers.append("division")
+                                    headers.append("Division")
                             elif "banner" in cls:
                                 normalized = HEADER_NORMALIZATION.get(text, text)
                                 headers.append(normalized)
@@ -136,8 +136,8 @@ def extract_tables(wrapper) -> tuple:
                     while header_index < len(headers):
                         header = headers[header_index]
 
-                        if header == "division" and current_division:
-                            row_data["division"] = current_division
+                        if header == "Division" and current_division:
+                            row_data["Division"] = current_division
                             header_index += 1
                             continue
 

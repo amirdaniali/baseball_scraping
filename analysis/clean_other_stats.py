@@ -23,10 +23,10 @@ def clean_other_stats():
     numeric_cols = ["Games Behind", "Total Wins", "Total Loses", "Winning Percentage"]
     for col in numeric_cols:
         if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
+            df[col] = pd.to_numeric(df[col]).fillna(0)
 
     df["Team"] = df["Team"].str.strip()
-    df["division"] = df["division"].fillna("").str.strip()
+    df["Division"] = df["Division"].fillna("").str.strip()
 
     print(f"Cleaned shape: {df.shape}")
     print("\nCleaned Other Stats")

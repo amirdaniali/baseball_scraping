@@ -28,12 +28,19 @@ def build_layout(options):
                 children=[
                     html.H1("Baseball Stats Dashboard", style={"fontSize": "1.8rem"}),
                     html.P("Explore historical baseball data by league and year."),
-                    dcc.Dropdown(
-                        id="league-year",
-                        options=options,
-                        value=options[0]["value"],
-                        style={"marginBottom": "1.5rem"},
-                    ),
+                    html.Div([
+                    html.Div([
+                        html.Label("Select League"),
+                        dcc.Dropdown(id="league-dropdown", value="National League", placeholder="Choose a league"),
+                    ]),
+                    html.Div([
+                        html.Label("Select Year"),
+                        dcc.Dropdown(id="year-dropdown", value="2025", placeholder="Choose a year"),
+                    ]),
+                    
+                    html.Div(id="intro-block"),
+                    html.Div(id="dynamic-content"),
+                ]),
                     html.Div(id="intro-block"),
                 ],
             ),

@@ -45,4 +45,10 @@ HEADER_NORMALIZATION = {
     "SO": "Total Strikeouts",
     "SV": "Total Saves",
     "SVO": "Total Save Opportunities",
+
+    "East" : "Division",
+    "South" : "Division",
+    "North" : "Division",
+    "West" : "Division",
+    "Central" : "Division",
 }

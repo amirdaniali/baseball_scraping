@@ -2,7 +2,7 @@ from analysis.clean_intro_content import clean_intro_content
 from analysis.clean_meta import clean_meta
 from analysis.clean_hitter_stats import clean_hitter_stats
 from analysis.clean_pitcher_stats import clean_pitcher_stats
-from analysis.hitter_review_pivot import clean_team_review_hitter_pivot
+from analysis.clean_team_standings import clean_team_standings
 
 
 def get_league_year_options(df):
@@ -21,5 +21,5 @@ def load_all_data():
         "meta": clean_meta(),
         "hitter": clean_hitter_stats(),
         "pitcher": clean_pitcher_stats(),
-        # "team": clean_team_review_hitter_pivot(),
+        "team": clean_team_standings(),
     }

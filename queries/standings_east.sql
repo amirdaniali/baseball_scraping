@@ -1,3 +1,3 @@
-SELECT Team, division, Payroll
+SELECT Team, Division, Payroll
 FROM team_standings
-WHERE division = 'East';
+WHERE Division = 'East';
