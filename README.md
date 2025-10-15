@@ -133,7 +133,7 @@ The main logic of scraping comes from the `scrape_all.py` file which calls the `
 Some noteworthy considerations of the code in this phase are the following:
 
 - The data within the baseball alamnac website is very messy. Many column names are abbreviated. Many column names exist in multiple shapes such as `Team(s)`, `Team [Click for roster]`, `Team | Roster` , `Team | Roster]`, `TEAM` all refering to the `Team` column name. As such we need to have a dictionary to translate the representation of data in the website into predictable formats for our usage. Check `header_map.py` file for more of these time consuming examples. Each entry coresponds with me running the scraping logic once, waiting an hour for the scraping to finish, seeing the erros, correcting the code, and running again. 
-- Each page of the website has an intro section with some `h1` and `h2` tags, a quote section and some data table sections. Each table has its own potentially different convoluted mess of a html with a typical xpath looking like this: `/html/body/div[2]/div[2]/div[4]/table/tbody/tr[10]/td[5]/a` for just one element. These elements sometimes exist and sometimes don't exist since a previous row has a class tag like this: `<td rowspan="2" class="datacolBlue middle"><a href="../pitching/piwins4.shtml" title="YEAR BY YEAR LEADERS FOR WINS">Wins</a></td>` Thats right. the html has a cell that has an attribute that changes whether or not a cell in an upcming row will be present or not. I went through countless time consuming iterations on these row parsing logics and I don't wish them on my enemy.
+- Each page of the website has an intro section with some `h1` and `h2` tags, a quote section and some data table sections. Each table has its own potentially different convoluted mess of a html with a typical xpath looking like this: `/html/body/div[2]/div[2]/div[4]/table/tbody/tr[10]/td[5]/a` for just one element. These elements sometimes exist and sometimes don't because a previous row has a class tag like this: `<td rowspan="2" class="datacolBlue middle"><a href="../pitching/piwins4.shtml" title="YEAR BY YEAR LEADERS FOR WINS">Wins</a></td>` Thats right. the html has a cell that has an attribute that changes whether or not a cell in an upcoming row will be present or not. I went through countless time-consuming iterations on these parsing logics and I don't wish them on my worst enemy.
 - After parsing the data we store the page data into many dictionaries and pass them to the `storage/save_load.py` module to save to disk.
 
 ### `storage/`:
@@ -144,6 +144,8 @@ Responsible for exporting scraped data into structured CSV and JSON files. It al
 ### `analysis/`: 
 
 Imports CSVs into a SQLite database and provides a CLI for running queries. It includes schema inference, table creation, and flexible querying. It also contains the pandas dataframes files used for furthur analysis. These pandas dataframes are loaded by the `visualisation/data_loader` module later to produce a nice looking dashboard.
+
+
 
 ### `data/`:
 
