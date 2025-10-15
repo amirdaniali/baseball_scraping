@@ -21,5 +21,5 @@ def load_all_data():
         "meta": clean_meta(),
         "hitter": clean_hitter_stats(),
         "pitcher": clean_pitcher_stats(),
-        "team": clean_team_review_hitter_pivot(),
+        # "team": clean_team_review_hitter_pivot(),
     }

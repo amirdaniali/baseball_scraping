@@ -106,7 +106,7 @@ def update_dashboard(league_year):
         [
             render_table(hitter_df, "Best Hitter Statistics", table_type="player"),
             render_table(pitcher_df, "Best Pitcher Statistics", table_type="player"),
-            render_table(team_df, "Team Statistics"),
+            # render_table(team_df, "Team Statistics"),
         ]
     )
 
