@@ -137,7 +137,7 @@ def build_main_content(hitter_df, pitcher_df, team_df, year, league):
     return html.Div(
         [
             html.Div(
-                team_win_percentage_chart(team_df), id="team-win-percentage-chart"
+                team_win_percentage_chart(team_df, year), id="team-win-percentage-chart"
             ),
             html.Div(
                 render_table(
