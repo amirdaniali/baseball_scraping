@@ -192,7 +192,10 @@ def build_footer():
     return html.Footer(
         id="app-footer",
         style={
-            "textAlign": "center",
+            "display": "flex",
+            "flexDirection": "row",
+            "gap": "1rem",
+            "justifyContent": "center",
             "padding": "1rem",
             "fontSize": "0.9rem",
             "fontFamily": "Segoe UI, sans-serif",
@@ -201,6 +204,13 @@ def build_footer():
         },
         children=[
             html.Div("© Made by Amir Daniali."),
-            html.Div("2025 Code the Dream Python Course."),
+            html.A(
+                "Github Link",
+                href="https://github.com/amirdaniali/baseball_scraping",
+                style={
+                    "color": "#000000",
+                },
+                target="_blank",
+            ),
         ],
     )
