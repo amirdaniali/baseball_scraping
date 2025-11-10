@@ -136,7 +136,7 @@ def build_sidebar(league_options, year_options, default_league, default_year):
         },
         children=[
             html.H1(
-                "Baseball Stats Dashboard",
+                "Baseball Analytics",
                 id="sidebar-title",
                 style={"fontSize": "1.8rem", "textAlign": "center"},
             ),
