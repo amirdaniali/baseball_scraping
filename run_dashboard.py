@@ -18,6 +18,7 @@ DEFAULT_YEAR = "2025"
 
 app = Dash(__name__)
 server = app.server
+app.title = "Baseball Analytics"
 app.layout = build_layout(data, DEFAULT_LEAGUE, DEFAULT_YEAR)
 register_callbacks(app, data)
 
